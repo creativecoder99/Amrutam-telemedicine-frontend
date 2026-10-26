@@ -1,0 +1,74 @@
+/* Amrutam Telemedicine System — Design Token Foundations (docs/design.md & docs/skills.md) */
+
+:root {
+  /* Typography Scale */
+  --font-family-primary: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-size-base: 18px;
+  --font-weight-base: 500;
+  --font-line-height-base: 27px;
+
+  --font-size-xs: 12px;
+  --font-size-sm: 13.5px;
+  --font-size-md: 14px;
+  --font-size-lg: 15px;
+  --font-size-xl: 16px;
+  --font-size-2xl: 18px;
+  --font-size-3xl: 20px;
+  --font-size-4xl: 21px;
+
+  /* Color Palette */
+  --color-text-primary: #213d31;   /* Deep Forest Herbal Green */
+  --color-border-muted: #3a643b;   /* Earthy Moss Green */
+  --color-border-strong: #222222;  /* Charcoal */
+  --color-surface-base: #000000;   /* Deep Base / Contrast */
+  --color-surface-muted: #f7fbf5;  /* Subtle Warm Herbal Tint */
+  --color-surface-raised: #fffdf3; /* Warm Cream Surface */
+  --color-surface-strong: #344334; /* Deep Olive Surface */
+
+  /* Semantic Feedback & State Colors */
+  --color-status-success: #2e6d38;
+  --color-status-success-bg: #eaf5ec;
+  --color-status-warning: #855309;
+  --color-status-warning-bg: #fdf5e6;
+  --color-status-error: #8b1e1e;
+  --color-status-error-bg: #fceaea;
+  --color-status-info: #1b4b66;
+  --color-status-info-bg: #e8f3f8;
+
+  /* Spacing Scale */
+  --space-1: 5px;
+  --space-2: 8px;
+  --space-3: 9px;
+  --space-4: 10px;
+  --space-5: 11px;
+  --space-6: 14px;
+  --space-7: 15px;
+  --space-8: 16px;
+
+  /* Extended Harmonious Spacing */
+  --space-9: 20px;
+  --space-10: 24px;
+  --space-11: 32px;
+  --space-12: 40px;
+  --space-13: 48px;
+  --space-14: 64px;
+
+  /* Radius Tokens */
+  --radius-xs: 18px;
+  --radius-sm: 20px;
+  --radius-md: 50px;
+  --radius-lg: 999px;
+
+  /* Shadow Tokens */
+  --shadow-1: rgba(0, 0, 0, 0.12) 0px 10px 22px 0px;
+  --shadow-2: rgba(0, 0, 0, 0.12) 0px 14px 32px 0px;
+  --shadow-subtle: 0 2px 8px rgba(33, 61, 49, 0.06);
+
+  /* Motion Duration Tokens */
+  --motion-duration-instant: 200ms;
+  --motion-duration-fast: 220ms;
+  --motion-duration-normal: 250ms;
+  --motion-duration-slow: 300ms;
+  --motion-duration-slower: 500ms;
+  --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
