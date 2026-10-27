@@ -109,7 +109,7 @@ export default async function HomePage() {
               cryptographically verifiable digital prescriptions.
             </p>
 
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '40px' }}>
               <Link
                 href="/doctors"
                 style={{
@@ -142,6 +142,26 @@ export default async function HomePage() {
               >
                 Patient Portal
               </Link>
+            </div>
+
+            {/* Hero Visual Section: Connects to public/images/hero/ */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+              <div
+                style={{
+                  maxWidth: '720px',
+                  width: '100%',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  boxShadow: '0 18px 40px rgba(33, 61, 49, 0.15)',
+                  border: '1.5px solid rgba(58, 100, 59, 0.25)',
+                }}
+              >
+                <img
+                  src="/images/hero/hero-sample.svg"
+                  alt="Amrutam Clinical Telemedicine Hero"
+                  style={{ width: '100%', height: 'auto', display: 'block' }}
+                />
+              </div>
             </div>
           </div>
         </div>

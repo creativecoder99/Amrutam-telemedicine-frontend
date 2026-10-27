@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60" fill="none">
+  <!-- Ayurvedic Leaf Emblem -->
+  <rect width="48" height="48" x="6" y="6" rx="12" fill="#213d31" />
+  <path d="M30 14 L30 46" stroke="#fffdf3" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M30 22 C37 22 43 27 43 34 C43 40 37 44 30 46" stroke="#fffdf3" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M30 22 C23 22 17 27 17 34 C17 40 23 44 30 46" stroke="#fffdf3" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <circle cx="30" cy="22" r="2.5" fill="#10b981" />
+
+  <!-- Brand Typography -->
+  <text x="64" y="32" font-family="'Lato', sans-serif" font-size="22" font-weight="800" letter-spacing="2" fill="#213d31">AMRUTAM</text>
+  <text x="65" y="46" font-family="'Lato', sans-serif" font-size="10" font-weight="600" letter-spacing="1" fill="#3a643b">AYURVEDIC TELEMEDICINE</text>
+</svg>
