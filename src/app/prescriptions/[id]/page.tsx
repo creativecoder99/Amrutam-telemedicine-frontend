@@ -165,21 +165,34 @@ export default function PrescriptionDetailPage({ params }: PageProps) {
               gap: '16px',
             }}
           >
-            <div>
-              <span
+            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+              <img
+                src="/images/logo/logo.jpeg"
+                alt="Amrutam Logo"
                 style={{
-                  fontSize: '24px',
-                  fontWeight: 900,
-                  letterSpacing: '0.08em',
-                  color: 'var(--color-text-primary)',
-                  display: 'block',
+                  width: '52px',
+                  height: '52px',
+                  borderRadius: '10px',
+                  objectFit: 'cover',
+                  border: '1.5px solid var(--color-border-muted)',
                 }}
-              >
-                AMRUTAM TELEMEDICINE
-              </span>
-              <span style={{ fontSize: '13px', color: 'var(--color-border-muted)', fontWeight: 600 }}>
-                Authentic Ayurvedic Clinical Care & Teleconsultation Portal
-              </span>
+              />
+              <div>
+                <span
+                  style={{
+                    fontSize: '24px',
+                    fontWeight: 900,
+                    letterSpacing: '0.08em',
+                    color: 'var(--color-text-primary)',
+                    display: 'block',
+                  }}
+                >
+                  AMRUTAM TELEMEDICINE
+                </span>
+                <span style={{ fontSize: '13px', color: 'var(--color-border-muted)', fontWeight: 600 }}>
+                  Authentic Ayurvedic Clinical Care & Teleconsultation Portal
+                </span>
+              </div>
             </div>
 
             <div style={{ textAlign: 'right', fontSize: '13px', lineHeight: '20px' }}>

@@ -4,6 +4,8 @@ import { api } from '../lib/api';
 import { DoctorCard } from '../components/doctors/DoctorCard';
 import { Badge } from '../components/ui/Badge';
 
+import { HeroCarousel } from '../components/home/HeroCarousel';
+
 export const revalidate = 60; // revalidate every 60s
 
 export default async function HomePage() {
@@ -67,101 +69,134 @@ export default async function HomePage() {
 
   return (
     <div style={{ backgroundColor: 'var(--color-surface-raised)', minHeight: '100vh' }}>
-      {/* Hero Section */}
+      {/* Hero Section with Live Amrutam Formulations Carousel */}
       <section
         style={{
           borderBottom: '1px solid rgba(58, 100, 59, 0.15)',
-          paddingTop: 'var(--space-14)',
-          paddingBottom: 'var(--space-13)',
+          paddingTop: 'var(--space-12)',
+          paddingBottom: 'var(--space-12)',
           backgroundColor: 'var(--color-surface-muted)',
         }}
       >
         <div className="container">
-          <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-6)' }}>
-              <Badge variant="success">
-                National Medical Commission Verified Practitioners
-              </Badge>
-            </div>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '40px',
+              alignItems: 'center',
+            }}
+          >
+            {/* Left Column: Clinical Wisdom Copy & Primary CTAs */}
+            <div>
+              <div style={{ display: 'inline-flex', marginBottom: 'var(--space-5)' }}>
+                <Badge variant="success">
+                  🌿 National Medical Commission Verified Vaidyas
+                </Badge>
+              </div>
 
-            <h1
-              style={{
-                fontSize: '40px',
-                lineHeight: '52px',
-                fontWeight: 700,
-                color: 'var(--color-text-primary)',
-                marginBottom: 'var(--space-6)',
-              }}
-            >
-              Ancient Ayurvedic Wisdom, Powered by Modern Clinical Telemedicine
-            </h1>
-
-            <p
-              style={{
-                fontSize: '18px',
-                lineHeight: '28px',
-                color: '#344334',
-                marginBottom: 'var(--space-10)',
-              }}
-            >
-              Consult board-certified Vaidyas for gut balance, chronic migraine, hormonal harmony,
-              and holistic vitality. Enjoy zero double-booking distributed scheduling and
-              cryptographically verifiable digital prescriptions.
-            </p>
-
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '40px' }}>
-              <Link
-                href="/doctors"
+              <h1
                 style={{
-                  backgroundColor: 'var(--color-text-primary)',
-                  color: 'var(--color-surface-raised)',
-                  padding: '14px 32px',
-                  borderRadius: 'var(--radius-sm)',
-                  fontSize: '16px',
-                  fontWeight: 700,
-                  textDecoration: 'none',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
+                  fontSize: '38px',
+                  lineHeight: '48px',
+                  fontWeight: 800,
+                  color: 'var(--color-text-primary)',
+                  marginBottom: 'var(--space-5)',
+                  letterSpacing: '-0.02em',
                 }}
               >
-                Find a Doctor & Book Slot →
-              </Link>
-              <Link
-                href="/patient"
+                Ancient Ayurvedic Wisdom, Powered by Modern Clinical Telemedicine
+              </h1>
+
+              <p
                 style={{
-                  backgroundColor: 'transparent',
-                  color: 'var(--color-border-muted)',
-                  border: '1.5px solid var(--color-border-muted)',
-                  padding: '14px 28px',
-                  borderRadius: 'var(--radius-sm)',
-                  fontSize: '16px',
-                  fontWeight: 700,
-                  textDecoration: 'none',
+                  fontSize: '17px',
+                  lineHeight: '27px',
+                  color: '#344334',
+                  marginBottom: 'var(--space-8)',
                 }}
               >
-                Patient Portal
-              </Link>
-            </div>
+                Consult board-certified Vaidyas for gut balance, chronic joint pain, hormonal harmony,
+                and holistic vitality. Enjoy zero double-booking distributed scheduling, authentic
+                classical herbal remedies, and cryptographically verifiable digital prescriptions.
+              </p>
 
-            {/* Hero Visual Section: Connects to public/images/hero/ */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
+              <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap', marginBottom: '32px' }}>
+                <Link
+                  href="/doctors"
+                  style={{
+                    backgroundColor: 'var(--color-text-primary)',
+                    color: 'var(--color-surface-raised)',
+                    padding: '14px 28px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    boxShadow: '0 4px 14px rgba(33, 61, 49, 0.25)',
+                  }}
+                >
+                  Find a Doctor & Book Slot →
+                </Link>
+                <Link
+                  href="/patient"
+                  style={{
+                    backgroundColor: '#fffdf3',
+                    color: 'var(--color-border-muted)',
+                    border: '1.5px solid var(--color-border-muted)',
+                    padding: '14px 24px',
+                    borderRadius: 'var(--radius-sm)',
+                    fontSize: '15px',
+                    fontWeight: 700,
+                    textDecoration: 'none',
+                  }}
+                >
+                  Patient Portal
+                </Link>
+              </div>
+
+              {/* Trust Metrics Pill Strip */}
               <div
                 style={{
-                  maxWidth: '720px',
-                  width: '100%',
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  boxShadow: '0 18px 40px rgba(33, 61, 49, 0.15)',
-                  border: '1.5px solid rgba(58, 100, 59, 0.25)',
+                  display: 'flex',
+                  gap: '24px',
+                  borderTop: '1px solid rgba(58, 100, 59, 0.15)',
+                  paddingTop: '20px',
+                  flexWrap: 'wrap',
                 }}
               >
-                <img
-                  src="/images/hero/hero-sample.svg"
-                  alt="Amrutam Clinical Telemedicine Hero"
-                  style={{ width: '100%', height: 'auto', display: 'block' }}
-                />
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-text-primary)' }}>
+                    15,000+
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#556b2f', fontWeight: 600 }}>
+                    Consultations Completed
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-text-primary)' }}>
+                    4.9 ★
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#556b2f', fontWeight: 600 }}>
+                    Patient Clinical Rating
+                  </div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-text-primary)' }}>
+                    100%
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#556b2f', fontWeight: 600 }}>
+                    Certified Herbal Formulations
+                  </div>
+                </div>
               </div>
+            </div>
+
+            {/* Right Column: Interactive Amrutam Formulations Carousel */}
+            <div>
+              <HeroCarousel />
             </div>
           </div>
         </div>

@@ -145,15 +145,29 @@ export const AuthModal: React.FC = () => {
       >
         {/* Modal Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <div>
-            <h2 style={{ fontSize: '22px', color: '#213d31', margin: 0, fontWeight: 700 }}>
-              {mode === 'login' ? 'Welcome to Amrutam' : 'Create Your Amrutam Account'}
-            </h2>
-            <p style={{ fontSize: '13px', color: '#3a643b', margin: '4px 0 0 0' }}>
-              {mode === 'login'
-                ? 'Sign in to access your consultations, prescriptions & records.'
-                : 'Join the clinical Ayurvedic telemedicine network.'}
-            </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <img
+              src="/images/logo/logo.jpeg"
+              alt="Amrutam Logo"
+              style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '8px',
+                objectFit: 'cover',
+                border: '1.5px solid #3a643b',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+              }}
+            />
+            <div>
+              <h2 style={{ fontSize: '20px', color: '#213d31', margin: 0, fontWeight: 700 }}>
+                {mode === 'login' ? 'Welcome to Amrutam' : 'Create Your Amrutam Account'}
+              </h2>
+              <p style={{ fontSize: '12px', color: '#3a643b', margin: '2px 0 0 0' }}>
+                {mode === 'login'
+                  ? 'Sign in to access your consultations, prescriptions & records.'
+                  : 'Join the clinical Ayurvedic telemedicine network.'}
+              </p>
+            </div>
           </div>
           <button
             onClick={closeAuthModal}

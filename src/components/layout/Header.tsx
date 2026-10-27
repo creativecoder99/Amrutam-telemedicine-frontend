@@ -121,25 +121,18 @@ export const Header: React.FC = () => {
             textDecoration: 'none',
           }}
         >
-          <div
+          <img
+            src="/images/logo/logo.jpeg"
+            alt="Amrutam Logo"
             style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: 'var(--radius-sm)',
-              backgroundColor: 'var(--color-text-primary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--color-surface-raised)',
+              width: '44px',
+              height: '44px',
+              borderRadius: '10px',
+              objectFit: 'cover',
+              boxShadow: '0 2px 8px rgba(33, 61, 49, 0.2)',
+              border: '1.5px solid rgba(58, 100, 59, 0.3)',
             }}
-          >
-            {/* Ayurvedic Leaf Motif SVG */}
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 2L12 22" />
-              <path d="M12 7C16 7 20 10 20 15C20 19 16 21 12 22" />
-              <path d="M12 7C8 7 4 10 4 15C4 19 8 21 12 22" />
-            </svg>
-          </div>
+          />
           <div>
             <span
               style={{

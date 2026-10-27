@@ -24,9 +24,22 @@ export const Footer: React.FC = () => {
         >
           {/* Brand & Healthcare Mission */}
           <div>
-            <h4 style={{ color: 'var(--color-surface-raised)', marginBottom: '12px' }}>
-              AMRUTAM TELEMEDICINE
-            </h4>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
+              <img
+                src="/images/logo/logo.jpeg"
+                alt="Amrutam Logo"
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '8px',
+                  objectFit: 'cover',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                }}
+              />
+              <h4 style={{ color: 'var(--color-surface-raised)', margin: 0, letterSpacing: '0.05em' }}>
+                AMRUTAM TELEMEDICINE
+              </h4>
+            </div>
             <p style={{ color: 'rgba(255, 253, 243, 0.85)', fontSize: '14px', lineHeight: '22px' }}>
               Bridging centuries of authentic Ayurvedic wisdom with modern clinical telemedicine.
               Verified Vaidyas, zero double-booking distributed scheduling, and cryptographically
