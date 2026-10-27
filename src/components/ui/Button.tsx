@@ -3,7 +3,7 @@
 import React from 'react';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'subtle' | 'danger';
+  variant?: 'primary' | 'secondary' | 'subtle' | 'danger' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
 }
@@ -26,6 +26,7 @@ export const Button: React.FC<ButtonProps> = ({
           color: 'var(--color-surface-raised)',        // #fffdf3 Warm Cream
           border: '1px solid var(--color-text-primary)',
         };
+      case 'outline':
       case 'secondary':
         return {
           backgroundColor: 'transparent',

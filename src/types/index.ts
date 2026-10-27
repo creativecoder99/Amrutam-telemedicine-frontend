@@ -13,6 +13,51 @@ export interface Doctor {
   rating: number;
   reviewCount: number;
   isVerified: boolean;
+  verificationStatus?: 'PENDING_VERIFICATION' | 'VERIFIED' | 'REJECTED';
+  rejectionReason?: string;
+  licenseDocumentUrl?: string;
+  qualificationDocumentUrl?: string;
+  idProofUrl?: string;
+}
+
+export interface Patient {
+  id: string;
+  email: string;
+  role: 'PATIENT';
+  fullName: string;
+  phone: string;
+  gender: string;
+  prakritiType: string;
+  address?: string;
+  emergencyContact?: string;
+  createdAt?: string;
+}
+
+export interface Wallet {
+  id: string;
+  doctorId: string;
+  balance: number;
+  totalEarned: number;
+  updatedAt: string;
+  thresholdInr?: number;
+}
+
+export interface PayoutRequest {
+  id: string;
+  doctorId: string;
+  doctorName?: string;
+  amount: number;
+  status: 'PENDING' | 'PROCESSED' | 'REJECTED';
+  accountDetails: {
+    upiId?: string;
+    bankName?: string;
+    accountNumber?: string;
+    ifscCode?: string;
+    accountHolderName?: string;
+  };
+  adminNotes?: string;
+  createdAt: string;
+  processedAt?: string;
 }
 
 export interface AvailabilitySlot {
@@ -94,6 +139,13 @@ export interface AnalyticsSummary {
     estimatedRevenueInr: number;
     activeHolds: number;
     availableSlotsInventory: number;
+    totalPatients?: number;
+    totalDoctors?: number;
+    verifiedDoctors?: number;
+    pendingDoctors?: number;
+    totalPayoutsProcessedInr?: number;
+    pendingPayoutRequestsCount?: number;
+    pendingPayoutAmountInr?: number;
   };
   doctorUtilization: Array<{
     doctorId: string;

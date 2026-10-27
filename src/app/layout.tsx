@@ -3,6 +3,7 @@ import '../styles/tokens.css';
 import '../styles/globals.css';
 import { Header } from '../components/layout/Header';
 import { Footer } from '../components/layout/Footer';
+import { AppProviders } from '../components/layout/AppProviders';
 
 export const metadata: Metadata = {
   title: 'Amrutam Telemedicine — Authentic Ayurveda & Clinical Consultations',
@@ -26,14 +27,16 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <a href="#main-content" className="skip-to-content">
-          Skip to main content
-        </a>
-        <Header />
-        <main id="main-content" style={{ flex: 1 }}>
-          {children}
-        </main>
-        <Footer />
+        <AppProviders>
+          <a href="#main-content" className="skip-to-content">
+            Skip to main content
+          </a>
+          <Header />
+          <main id="main-content" style={{ flex: 1 }}>
+            {children}
+          </main>
+          <Footer />
+        </AppProviders>
       </body>
     </html>
   );

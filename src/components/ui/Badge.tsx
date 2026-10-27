@@ -2,7 +2,7 @@ import React from 'react';
 
 export interface BadgeProps {
   children: React.ReactNode;
-  variant?: 'success' | 'warning' | 'error' | 'info' | 'neutral';
+  variant?: 'success' | 'warning' | 'error' | 'danger' | 'info' | 'neutral';
   style?: React.CSSProperties;
 }
 
@@ -22,6 +22,7 @@ export const Badge: React.FC<BadgeProps> = ({ children, variant = 'neutral', sty
           border: '1px solid rgba(133, 83, 9, 0.3)',
         };
       case 'error':
+      case 'danger':
         return {
           bg: 'var(--color-status-error-bg)',
           color: 'var(--color-status-error)',
