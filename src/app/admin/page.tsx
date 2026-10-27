@@ -12,14 +12,17 @@ export const metadata: Metadata = {
 // Force Server-Side Rendering (SSR) on every incoming request
 export const dynamic = 'force-dynamic';
 
-const API_BASE_URL =
+const rawUrl = (
   process.env.INTERNAL_API_URL ||
   process.env.NEXT_PUBLIC_API_URL ||
-  'http://localhost:4000/api';
+  'http://localhost:4000/api'
+).trim().replace(/\/+$/, '');
+const API_BASE_URL = rawUrl.endsWith('/api') ? rawUrl : `${rawUrl}/api`;
 
 async function fetchServerData<T>(path: string, fallback: T): Promise<T> {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
   try {
-    const res = await fetch(`${API_BASE_URL}${path}`, {
+    const res = await fetch(`${API_BASE_URL}${cleanPath}`, {
       cache: 'no-store', // Ensures fresh SSR data on every request
       headers: {
         'Content-Type': 'application/json',

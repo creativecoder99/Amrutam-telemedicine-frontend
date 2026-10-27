@@ -10,10 +10,12 @@ import {
   Patient,
 } from '../types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+const rawApiUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').trim().replace(/\/+$/, '');
+const API_BASE_URL = rawApiUrl.endsWith('/api') ? rawApiUrl : `${rawApiUrl}/api`;
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const url = `${API_BASE_URL}${path}`;
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const url = `${API_BASE_URL}${cleanPath}`;
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {}),
