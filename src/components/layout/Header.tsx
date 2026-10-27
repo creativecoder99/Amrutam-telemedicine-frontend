@@ -5,7 +5,13 @@ import Link from 'next/link';
 import { useAuth } from '../../lib/auth-context';
 
 export const Header: React.FC = () => {
-  const { user, currentPersonaKey, switchPersona } = useAuth();
+  const { user, openAuthModal, logoutUser } = useAuth();
+
+  const getDashboardHref = () => {
+    if (user.role === 'ADMIN') return '/admin';
+    if (user.role === 'DOCTOR') return '/doctor';
+    return '/patient';
+  };
 
   return (
     <header
@@ -18,7 +24,7 @@ export const Header: React.FC = () => {
         boxShadow: 'var(--shadow-subtle)',
       }}
     >
-      {/* Top Notification / Role Switcher Strip */}
+      {/* Top Clinical Trust & Session Strip */}
       <div
         style={{
           backgroundColor: 'var(--color-primary-dark)',
@@ -49,58 +55,47 @@ export const Header: React.FC = () => {
               }}
             />
             <span style={{ opacity: 0.9 }}>
-              Simulated Role Session: <strong>{user.fullName}</strong> ({user.role}
-              {user.verificationStatus ? ` • ${user.verificationStatus}` : ''})
+              🌿 100% Certified Ayurvedic Doctors • Digital Prescriptions • Zero Double-Booking Guarantee
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <label htmlFor="persona-switcher" style={{ opacity: 0.8, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Switch Persona:
-            </label>
-            <select
-              id="persona-switcher"
-              value={currentPersonaKey}
-              onChange={(e) => switchPersona(e.target.value)}
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                color: '#fff',
-                border: '1px solid rgba(255, 255, 255, 0.25)',
-                borderRadius: '4px',
-                padding: '2px 8px',
-                fontSize: '12px',
-                cursor: 'pointer',
-                outline: 'none',
-              }}
-            >
-              <option value="patient" style={{ color: '#213d31', backgroundColor: '#fffdf3' }}>
-                Patient: Arjun Verma (Vata-Pitta)
-              </option>
-              <option value="doctor_verified" style={{ color: '#213d31', backgroundColor: '#fffdf3' }}>
-                Doctor (Verified): Dr. Rajesh Sharma (₹1,200 Wallet)
-              </option>
-              <option value="doctor_pending" style={{ color: '#213d31', backgroundColor: '#fffdf3' }}>
-                Doctor (Pending KYC): Dr. Kavyanjali Sen
-              </option>
-              <option value="admin" style={{ color: '#213d31', backgroundColor: '#fffdf3' }}>
-                Admin: Governance & Payouts Center
-              </option>
-            </select>
-
-            <Link
-              href="/doctor/register"
-              style={{
-                backgroundColor: 'var(--color-primary-accent)',
-                color: '#fff',
-                padding: '2px 8px',
-                borderRadius: '4px',
-                textDecoration: 'none',
-                fontWeight: 600,
-                fontSize: '11px',
-              }}
-            >
-              + Register Doctor
-            </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {user && user.email ? (
+              <>
+                <span style={{ opacity: 0.85, fontSize: '11px' }}>
+                  Signed in: <strong>{user.fullName}</strong> ({user.role})
+                </span>
+                <Link
+                  href={getDashboardHref()}
+                  style={{
+                    color: '#fff',
+                    textDecoration: 'underline',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                  }}
+                >
+                  Open Dashboard →
+                </Link>
+                <button
+                  onClick={logoutUser}
+                  style={{
+                    backgroundColor: 'rgba(255,255,255,0.15)',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '2px 8px',
+                    borderRadius: '3px',
+                    fontSize: '10px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <span style={{ opacity: 0.85, fontSize: '11px' }}>
+                ISO & NMC Compliant Telemedicine Platform
+              </span>
+            )}
           </div>
         </div>
       </div>
@@ -112,8 +107,8 @@ export const Header: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          paddingTop: 'var(--space-5)',
-          paddingBottom: 'var(--space-5)',
+          paddingTop: 'var(--space-4)',
+          paddingBottom: 'var(--space-4)',
         }}
       >
         {/* Brand Logo & Telehealth Monogram */}
@@ -174,132 +169,79 @@ export const Header: React.FC = () => {
           </div>
         </Link>
 
-        {/* Navigation Links */}
+        {/* Navigation Links (Clean, No Dashboard or Admin links) */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-6)' }}>
           <Link
             href="/doctors"
             style={{
-              fontSize: 'var(--font-size-md)',
+              fontSize: '14px',
               fontWeight: 600,
               color: 'var(--color-text-primary)',
               textDecoration: 'none',
               padding: '6px 10px',
               borderRadius: 'var(--radius-xs)',
+              transition: 'color 0.2s',
             }}
           >
             Find Doctors
           </Link>
-
           <Link
-            href="/patient"
+            href="/#specialties"
             style={{
-              fontSize: 'var(--font-size-md)',
+              fontSize: '14px',
               fontWeight: 600,
               color: 'var(--color-text-primary)',
               textDecoration: 'none',
               padding: '6px 10px',
               borderRadius: 'var(--radius-xs)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
+              transition: 'color 0.2s',
             }}
           >
-            Patient Dashboard
-            {user.role === 'PATIENT' && (
-              <span
-                style={{
-                  fontSize: '10px',
-                  backgroundColor: 'rgba(58, 100, 59, 0.15)',
-                  color: 'var(--color-primary-dark)',
-                  padding: '1px 6px',
-                  borderRadius: '10px',
-                }}
-              >
-                Active
-              </span>
-            )}
+            Specialties
           </Link>
-
           <Link
-            href="/doctor"
+            href="/#how-it-works"
             style={{
-              fontSize: 'var(--font-size-md)',
+              fontSize: '14px',
               fontWeight: 600,
               color: 'var(--color-text-primary)',
               textDecoration: 'none',
               padding: '6px 10px',
               borderRadius: 'var(--radius-xs)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
+              transition: 'color 0.2s',
             }}
           >
-            Doctor Dashboard
-            {user.role === 'DOCTOR' && (
-              <span
-                style={{
-                  fontSize: '10px',
-                  backgroundColor: 'rgba(58, 100, 59, 0.15)',
-                  color: 'var(--color-primary-dark)',
-                  padding: '1px 6px',
-                  borderRadius: '10px',
-                }}
-              >
-                Active
-              </span>
-            )}
-          </Link>
-
-          <Link
-            href="/admin"
-            style={{
-              fontSize: 'var(--font-size-md)',
-              fontWeight: 600,
-              color: 'var(--color-text-primary)',
-              textDecoration: 'none',
-              padding: '6px 10px',
-              borderRadius: 'var(--radius-xs)',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            Admin Center
-            {user.role === 'ADMIN' && (
-              <span
-                style={{
-                  fontSize: '10px',
-                  backgroundColor: 'rgba(58, 100, 59, 0.15)',
-                  color: 'var(--color-primary-dark)',
-                  padding: '1px 6px',
-                  borderRadius: '10px',
-                }}
-              >
-                Active
-              </span>
-            )}
+            How It Works
           </Link>
         </nav>
 
-        {/* Primary Action Button */}
+        {/* Action Button: Exactly One Sign In / Sign Up Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <Link
-            href="/doctors"
+          <button
+            id="nav-signup-login-btn"
+            onClick={() => openAuthModal('login')}
             style={{
-              backgroundColor: 'var(--color-text-primary)',
+              backgroundColor: 'var(--color-primary-dark)',
               color: 'var(--color-surface-raised)',
-              padding: '8px 16px',
+              border: 'none',
+              padding: '9px 20px',
               borderRadius: 'var(--radius-sm)',
-              fontSize: 'var(--font-size-md)',
-              fontWeight: 600,
-              textDecoration: 'none',
+              fontSize: '13px',
+              fontWeight: 700,
+              cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '8px',
+              boxShadow: '0 2px 6px rgba(33, 61, 49, 0.2)',
+              transition: 'all 0.2s ease',
             }}
           >
-            Book Appointment
-          </Link>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            Sign In / Sign Up
+          </button>
         </div>
       </div>
     </header>
