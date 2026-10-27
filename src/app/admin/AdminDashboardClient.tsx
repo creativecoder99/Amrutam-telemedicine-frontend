@@ -5,6 +5,7 @@ import { api } from '../../lib/api';
 import { AnalyticsSummary, AuditLog, Doctor, Patient, PayoutRequest } from '../../types';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
+import { useAuth } from '../../lib/auth-context';
 
 export interface AdminDashboardClientProps {
   initialSummary: AnalyticsSummary | null;
@@ -21,6 +22,7 @@ export const AdminDashboardClient: React.FC<AdminDashboardClientProps> = ({
   initialPatients,
   initialPayoutRequests,
 }) => {
+  const { logoutUser } = useAuth();
   const [activeTab, setActiveTab] = useState<'analytics' | 'kyc' | 'payouts' | 'doctors' | 'patients' | 'audit'>('analytics');
 
   // Core Data initialized from Server-Side Rendering (SSR)
@@ -271,6 +273,16 @@ export const AdminDashboardClient: React.FC<AdminDashboardClientProps> = ({
           <div style={{ display: 'flex', gap: '10px' }}>
             <Button variant="outline" size="sm" onClick={() => loadAllData()} isLoading={loading}>
               Refresh System Metrics
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => {
+                logoutUser();
+                window.location.href = '/';
+              }}
+            >
+              Sign Out
             </Button>
           </div>
         </div>

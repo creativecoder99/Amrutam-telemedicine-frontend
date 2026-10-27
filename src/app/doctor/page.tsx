@@ -9,7 +9,7 @@ import { Button } from '../../components/ui/Button';
 import { useAuth } from '../../lib/auth-context';
 
 export default function DoctorDashboardPage() {
-  const { user } = useAuth();
+  const { user, logoutUser } = useAuth();
   const [activeTab, setActiveTab] = useState<'wallet' | 'availability' | 'appointments'>('wallet');
 
   // Doctor profile & status
@@ -181,6 +181,16 @@ export default function DoctorDashboardPage() {
             >
               + Submit New Registration
             </Link>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => {
+                logoutUser();
+                window.location.href = '/';
+              }}
+            >
+              Sign Out
+            </Button>
           </div>
         </div>
 

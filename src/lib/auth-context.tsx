@@ -52,6 +52,13 @@ export const PRESET_PERSONAS: Record<string, UserPersona> = {
   },
 };
 
+export const EMPTY_USER: UserPersona = {
+  id: '',
+  role: 'PATIENT',
+  fullName: '',
+  email: '',
+};
+
 interface AuthContextType {
   user: UserPersona;
   currentPersonaKey: string;
@@ -69,11 +76,11 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: PRESET_PERSONAS.patient,
-  currentPersonaKey: 'patient',
+  user: EMPTY_USER,
+  currentPersonaKey: '',
   switchPersona: () => {},
   setUser: () => {},
-  isAuthenticated: true,
+  isAuthenticated: false,
   isAuthModalOpen: false,
   authModalMode: 'login',
   authModalInitialRole: 'PATIENT',
@@ -85,8 +92,8 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentPersonaKey, setCurrentPersonaKey] = useState<string>('patient');
-  const [user, setUser] = useState<UserPersona>(PRESET_PERSONAS.patient);
+  const [currentPersonaKey, setCurrentPersonaKey] = useState<string>('');
+  const [user, setUser] = useState<UserPersona>(EMPTY_USER);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('login');
   const [authModalInitialRole, setAuthModalInitialRole] = useState<Role>('PATIENT');
@@ -96,16 +103,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const storedUser = localStorage.getItem('amrutam_auth_user');
       if (storedUser) {
         const parsed = JSON.parse(storedUser);
-        setUser(parsed);
-        return;
+        if (parsed && parsed.email) {
+          setUser(parsed);
+          return;
+        }
       }
       const storedKey = localStorage.getItem('amrutam_active_persona');
       if (storedKey && PRESET_PERSONAS[storedKey]) {
         setCurrentPersonaKey(storedKey);
         setUser(PRESET_PERSONAS[storedKey]);
+        return;
       }
+      setUser(EMPTY_USER);
+      setCurrentPersonaKey('');
     } catch {
       // LocalStorage not available or SSR
+      setUser(EMPTY_USER);
     }
   }, []);
 
@@ -181,11 +194,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       localStorage.removeItem('amrutam_auth_user');
       localStorage.removeItem('amrutam_auth_token');
+      localStorage.removeItem('amrutam_active_persona');
     } catch {
       // Ignored
     }
-    setUser(PRESET_PERSONAS.patient);
-    setCurrentPersonaKey('patient');
+    setUser(EMPTY_USER);
+    setCurrentPersonaKey('');
   };
 
   return (
@@ -195,7 +209,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         currentPersonaKey,
         switchPersona,
         setUser,
-        isAuthenticated: true,
+        isAuthenticated: Boolean(user && user.email),
         isAuthModalOpen,
         authModalMode,
         authModalInitialRole,

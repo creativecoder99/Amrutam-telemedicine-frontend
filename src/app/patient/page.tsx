@@ -9,7 +9,7 @@ import { Button } from '../../components/ui/Button';
 import { useAuth } from '../../lib/auth-context';
 
 export default function PatientDashboardPage() {
-  const { user, setUser } = useAuth();
+  const { user, setUser, logoutUser } = useAuth();
   const [activeTab, setActiveTab] = useState<'profile' | 'doctors' | 'bookings' | 'prescriptions'>('profile');
 
   // Data states
@@ -197,7 +197,7 @@ export default function PatientDashboardPage() {
               <Badge variant="success">ABHA Verified Patient</Badge>
             </div>
             <p style={{ fontSize: '14px', color: '#556b2f', margin: 0 }}>
-              {patientDetails.email || user.email} • {patientDetails.phone || user.phone} • Patient ID: {user.id.slice(0, 13)}...
+              {patientDetails.email || user.email || 'patient@example.com'} • {patientDetails.phone || user.phone} • Patient ID: {(user.id || 'patient-id').slice(0, 13)}...
             </p>
           </div>
 
@@ -207,6 +207,16 @@ export default function PatientDashboardPage() {
             </Button>
             <Button variant="primary" size="sm" onClick={() => setIsRegisterNewModalOpen(true)}>
               + Register New User
+            </Button>
+            <Button
+              variant="danger"
+              size="sm"
+              onClick={() => {
+                logoutUser();
+                window.location.href = '/';
+              }}
+            >
+              Sign Out
             </Button>
           </div>
         </div>

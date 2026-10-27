@@ -2,16 +2,25 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '../../lib/auth-context';
 
 export const Header: React.FC = () => {
+  const router = useRouter();
   const { user, openAuthModal, logoutUser } = useAuth();
 
   const getDashboardHref = () => {
-    if (user.role === 'ADMIN') return '/admin';
-    if (user.role === 'DOCTOR') return '/doctor';
+    if (user?.role === 'ADMIN') return '/admin';
+    if (user?.role === 'DOCTOR') return '/doctor';
     return '/patient';
   };
+
+  const handleSignOut = () => {
+    logoutUser();
+    router.push('/');
+  };
+
+  const isLoggedIn = Boolean(user && user.email);
 
   return (
     <header
@@ -60,33 +69,54 @@ export const Header: React.FC = () => {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {user && user.email ? (
+            {isLoggedIn ? (
               <>
-                <span style={{ opacity: 0.85, fontSize: '11px' }}>
-                  Signed in: <strong>{user.fullName}</strong> ({user.role})
+                <span style={{ opacity: 0.9, fontSize: '11px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>Signed in:</span>
+                  <strong style={{ color: '#fff' }}>{user.fullName}</strong>
+                  <span
+                    style={{
+                      backgroundColor: 'rgba(255,255,255,0.2)',
+                      padding: '1px 6px',
+                      borderRadius: '8px',
+                      fontSize: '9px',
+                      fontWeight: 700,
+                    }}
+                  >
+                    {user.role}
+                  </span>
                 </span>
                 <Link
                   href={getDashboardHref()}
                   style={{
                     color: '#fff',
-                    textDecoration: 'underline',
+                    textDecoration: 'none',
                     fontSize: '11px',
-                    fontWeight: 600,
+                    fontWeight: 700,
+                    backgroundColor: 'rgba(255,255,255,0.18)',
+                    padding: '3px 9px',
+                    borderRadius: '4px',
                   }}
                 >
-                  Open Dashboard →
+                  Dashboard →
                 </Link>
                 <button
-                  onClick={logoutUser}
+                  id="top-signout-btn"
+                  onClick={handleSignOut}
                   style={{
-                    backgroundColor: 'rgba(255,255,255,0.15)',
-                    color: '#fff',
+                    backgroundColor: '#ef4444',
+                    color: '#ffffff',
                     border: 'none',
-                    padding: '2px 8px',
-                    borderRadius: '3px',
-                    fontSize: '10px',
+                    padding: '3px 10px',
+                    borderRadius: '4px',
+                    fontSize: '11px',
+                    fontWeight: 700,
                     cursor: 'pointer',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
+                    transition: 'all 0.2s',
                   }}
+                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#dc2626')}
+                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#ef4444')}
                 >
                   Sign Out
                 </button>
@@ -162,7 +192,7 @@ export const Header: React.FC = () => {
           </div>
         </Link>
 
-        {/* Navigation Links (Clean, No Dashboard or Admin links) */}
+        {/* Navigation Links */}
         <nav style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-6)' }}>
           <Link
             href="/doctors"
@@ -208,44 +238,92 @@ export const Header: React.FC = () => {
           </Link>
         </nav>
 
-        {/* Action Button: High Visibility Sign In / Sign Up Button */}
+        {/* Action Buttons: Sign In / Sign Up OR Dashboard + Sign Out */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <button
-            id="nav-signup-login-btn"
-            onClick={() => openAuthModal('login')}
-            style={{
-              backgroundColor: '#3a643b',
-              color: '#ffffff',
-              border: '2px solid #213d31',
-              padding: '10px 22px',
-              borderRadius: '24px',
-              fontSize: '14px',
-              fontWeight: 700,
-              cursor: 'pointer',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '8px',
-              boxShadow: '0 4px 12px rgba(33, 61, 49, 0.25)',
-              transition: 'all 0.2s ease',
-              letterSpacing: '0.02em',
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#213d31';
-              e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = '0 6px 16px rgba(33, 61, 49, 0.35)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = '#3a643b';
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(33, 61, 49, 0.25)';
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-            Sign In / Sign Up
-          </button>
+          {isLoggedIn ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Link
+                href={getDashboardHref()}
+                style={{
+                  backgroundColor: '#3a643b',
+                  color: '#ffffff',
+                  border: '2px solid #213d31',
+                  padding: '9px 18px',
+                  borderRadius: '24px',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  boxShadow: '0 3px 10px rgba(33, 61, 49, 0.2)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                My Dashboard ({user.role}) →
+              </Link>
+              <button
+                id="nav-signout-btn"
+                onClick={handleSignOut}
+                style={{
+                  backgroundColor: 'transparent',
+                  color: '#ef4444',
+                  border: '1.5px solid #ef4444',
+                  padding: '8px 16px',
+                  borderRadius: '24px',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = '#fef2f2';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                }}
+              >
+                Sign Out
+              </button>
+            </div>
+          ) : (
+            <button
+              id="nav-signup-login-btn"
+              onClick={() => openAuthModal('login')}
+              style={{
+                backgroundColor: '#3a643b',
+                color: '#ffffff',
+                border: '2px solid #213d31',
+                padding: '10px 22px',
+                borderRadius: '24px',
+                fontSize: '14px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 12px rgba(33, 61, 49, 0.25)',
+                transition: 'all 0.2s ease',
+                letterSpacing: '0.02em',
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#213d31';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 6px 16px rgba(33, 61, 49, 0.35)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = '#3a643b';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(33, 61, 49, 0.25)';
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Sign In / Sign Up
+            </button>
+          )}
         </div>
       </div>
     </header>
