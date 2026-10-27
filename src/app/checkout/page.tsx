@@ -7,24 +7,43 @@ import { api } from '../../lib/api';
 import { HoldCountdownTimer } from '../../components/booking/HoldCountdownTimer';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
+import { useAuth } from '../../lib/auth-context';
 
 function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user } = useAuth();
 
   const slotId = searchParams.get('slotId') || 'slot-d111-0-10-1';
   const doctorId = searchParams.get('doctorId') || 'd1111111-1111-1111-1111-111111111111';
   const expiresAt = searchParams.get('expiresAt') || new Date(Date.now() + 600000).toISOString();
 
-  const [paymentMethod, setPaymentMethod] = useState<'UPI' | 'NETBANKING' | 'CARD'>('UPI');
+  const [paymentMethod, setPaymentMethod] = useState<'RAZORPAY' | 'UPI' | 'NETBANKING' | 'CARD'>('RAZORPAY');
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [checkoutData, setCheckoutData] = useState<any>(null);
+  const [razorpayLoaded, setRazorpayLoaded] = useState(false);
+
+  // Load Razorpay checkout script dynamically
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if ((window as any).Razorpay) {
+        setRazorpayLoaded(true);
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        script.onload = () => setRazorpayLoaded(true);
+        script.onerror = () => console.warn('Could not load Razorpay SDK');
+        document.body.appendChild(script);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     async function initCheckout() {
       try {
-        const data = await api.createCheckout(slotId);
+        const data = await api.createCheckout(slotId, user.id);
         setCheckoutData(data);
       } catch (err) {
         // Fallback checkout details
@@ -36,21 +55,91 @@ function CheckoutContent() {
           amount: 650,
           currency: 'INR',
           holdExpiresAt: expiresAt,
+          gatewayDetails: {
+            keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_T3Y5v623Eu8yMx',
+            name: 'Amrutam Telemedicine',
+            description: 'Ayurvedic Teleconsultation',
+          },
         });
       }
     }
     initCheckout();
-  }, [slotId, expiresAt]);
+  }, [slotId, expiresAt, user.id]);
 
-  const handleConfirmAndPay = async () => {
+  const handleLaunchRazorpay = async () => {
     setIsProcessing(true);
     setErrorMessage(null);
 
-    try {
-      const orderId = checkoutData?.orderId || `order_${Date.now()}`;
-      const result = await api.processPayment(orderId, paymentMethod);
+    const orderId = checkoutData?.orderId || `order_${Date.now()}`;
+    const keyId =
+      checkoutData?.gatewayDetails?.keyId ||
+      process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ||
+      'rzp_test_T3Y5v623Eu8yMx';
 
-      // Redirect to consultation room or confirmation
+    // If Razorpay SDK is loaded on window, open the official Razorpay Checkout modal
+    if (typeof window !== 'undefined' && (window as any).Razorpay) {
+      try {
+        const options = {
+          key: keyId,
+          amount: Math.round((checkoutData?.amount || 650) * 100), // in paise
+          currency: checkoutData?.currency || 'INR',
+          name: 'Amrutam Telemedicine',
+          description: `Consultation with ${checkoutData?.doctorName || 'Ayurvedic Vaidya'}`,
+          image: 'https://cdn.amrutam.co.in/brand/amrutam_logo.png',
+          order_id: orderId.startsWith('order_') ? orderId : undefined,
+          handler: async function (response: any) {
+            try {
+              const result = await api.processPayment(
+                response.razorpay_order_id || orderId,
+                'RAZORPAY_GATEWAY',
+                {
+                  razorpayPaymentId: response.razorpay_payment_id,
+                  razorpaySignature: response.razorpay_signature,
+                }
+              );
+
+              const consultationId = result.consultation?.id || 'c1111111-1111-1111-1111-111111111111';
+              router.push(`/consultation/${consultationId}`);
+            } catch (verifErr) {
+              setErrorMessage((verifErr as Error).message || 'Signature verification failed.');
+              setIsProcessing(false);
+            }
+          },
+          prefill: {
+            name: user.fullName || 'Arjun Verma',
+            email: user.email || 'arjun.verma@example.in',
+            contact: user.phone || '+91 98765 43210',
+          },
+          notes: {
+            slotId,
+            doctorId,
+            patientId: user.id,
+          },
+          theme: {
+            color: '#213d31', // Amrutam Forest Green
+          },
+          modal: {
+            ondismiss: function () {
+              setIsProcessing(false);
+            },
+          },
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.on('payment.failed', function (response: any) {
+          setErrorMessage(response.error?.description || 'Payment was declined or failed.');
+          setIsProcessing(false);
+        });
+        rzp.open();
+        return;
+      } catch (rzpErr) {
+        console.warn('Razorpay modal launch exception:', rzpErr);
+      }
+    }
+
+    // Direct sandbox fallback if popup is blocked or offline
+    try {
+      const result = await api.processPayment(orderId, paymentMethod);
       const consultationId = result.consultation?.id || 'c1111111-1111-1111-1111-111111111111';
       router.push(`/consultation/${consultationId}`);
     } catch (err) {
@@ -71,7 +160,7 @@ function CheckoutContent() {
         {/* Hold Countdown Timer */}
         <div style={{ marginBottom: 'var(--space-8)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1 style={{ fontSize: '28px', color: 'var(--color-text-primary)' }}>
-            Checkout & Confirmation
+            Checkout & Razorpay Payment
           </h1>
           <HoldCountdownTimer expiresAt={expiresAt} />
         </div>
@@ -93,6 +182,30 @@ function CheckoutContent() {
           </div>
         )}
 
+        {/* Live Gateway Badge */}
+        <div
+          style={{
+            padding: '12px 18px',
+            backgroundColor: '#ecfdf5',
+            border: '1px solid #10b981',
+            borderRadius: '6px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: '13px',
+            color: '#065f46',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981' }} />
+            <span>
+              Razorpay Gateway Active: <strong>{checkoutData?.gatewayDetails?.keyId || 'rzp_test_T3Y5v623Eu8yMx'}</strong>
+            </span>
+          </div>
+          <Badge variant="success">Test Mode Connected</Badge>
+        </div>
+
         {/* Booking Summary Card */}
         <div className="amrutam-card" style={{ padding: 'var(--space-10)', marginBottom: 'var(--space-8)' }}>
           <h3 style={{ fontSize: '18px', marginBottom: '16px' }}>Consultation Details</h3>
@@ -107,13 +220,19 @@ function CheckoutContent() {
               <strong>{checkoutData?.specialty || 'Kayachikitsa (Internal Medicine)'}</strong>
             </div>
             <div>
-              <span style={{ color: '#666', fontSize: '12px', display: 'block' }}>Format</span>
-              <span>1-on-1 Encrypted Telehealth Video</span>
+              <span style={{ color: '#666', fontSize: '12px', display: 'block' }}>Patient</span>
+              <strong>{user.fullName || 'Arjun Verma'} ({user.phone || '+91 98765 43210'})</strong>
             </div>
             <div>
               <span style={{ color: '#666', fontSize: '12px', display: 'block' }}>Session Duration</span>
               <span>30 Minutes Full Clinical Evaluation</span>
             </div>
+            {checkoutData?.orderId && (
+              <div>
+                <span style={{ color: '#666', fontSize: '12px', display: 'block' }}>Razorpay Order ID</span>
+                <span style={{ fontFamily: 'monospace', fontSize: '13px' }}>{checkoutData.orderId}</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -123,9 +242,10 @@ function CheckoutContent() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {[
-              { id: 'UPI', label: 'UPI (Google Pay, PhonePe, Paytm, BHIM)', badge: 'Instant & Zero Surcharge' },
-              { id: 'NETBANKING', label: 'Net Banking (All Major Indian Banks)', badge: 'Secure Gateway' },
-              { id: 'CARD', label: 'Credit / Debit Card (Visa, MasterCard, RuPay)', badge: '256-bit Encrypted' },
+              { id: 'RAZORPAY', label: 'Razorpay Payment Gateway (UPI, Cards, NetBanking, Wallets)', badge: 'Official Gateway Modal' },
+              { id: 'UPI', label: 'Direct Instant UPI (Google Pay, PhonePe, Paytm)', badge: 'Fast Checkout' },
+              { id: 'NETBANKING', label: 'Net Banking (All Indian Scheduled Banks)', badge: 'Secure' },
+              { id: 'CARD', label: 'Credit / Debit Card (Visa, MasterCard, RuPay)', badge: '256-bit AES' },
             ].map((method) => {
               const isSelected = paymentMethod === method.id;
               return (
@@ -185,9 +305,9 @@ function CheckoutContent() {
             size="lg"
             variant="primary"
             isLoading={isProcessing}
-            onClick={handleConfirmAndPay}
+            onClick={handleLaunchRazorpay}
           >
-            Confirm & Complete Consultation Booking →
+            {paymentMethod === 'RAZORPAY' ? 'Pay with Razorpay →' : 'Confirm & Complete Booking →'}
           </Button>
         </div>
       </div>

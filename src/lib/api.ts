@@ -174,6 +174,11 @@ export const api = {
     amount: number;
     currency: string;
     holdExpiresAt: string;
+    gatewayDetails?: {
+      keyId: string;
+      name: string;
+      description: string;
+    };
   }> {
     return request('/payments/checkout', {
       method: 'POST',
@@ -181,7 +186,14 @@ export const api = {
     });
   },
 
-  async processPayment(orderId: string, paymentMethod = 'UPI'): Promise<{
+  async processPayment(
+    orderId: string,
+    paymentMethod = 'UPI',
+    options?: {
+      razorpayPaymentId?: string;
+      razorpaySignature?: string;
+    }
+  ): Promise<{
     success: boolean;
     transactionId: string;
     amount: number;
@@ -190,7 +202,12 @@ export const api = {
   }> {
     return request('/payments/process', {
       method: 'POST',
-      body: JSON.stringify({ orderId, paymentMethod }),
+      body: JSON.stringify({
+        orderId,
+        paymentMethod,
+        razorpayPaymentId: options?.razorpayPaymentId,
+        razorpaySignature: options?.razorpaySignature,
+      }),
       headers: {
         'Idempotency-Key': `pay_${orderId}_${Date.now()}`,
       },
