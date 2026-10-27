@@ -17,6 +17,9 @@
   --font-size-4xl: 21px;
 
   /* Color Palette */
+  --color-primary: #3a643b;        /* Main Herbal Green */
+  --color-primary-dark: #213d31;   /* Deep Forest Herbal Green */
+  --color-primary-accent: #3a643b; /* Earthy Moss Green */
   --color-text-primary: #213d31;   /* Deep Forest Herbal Green */
   --color-border-muted: #3a643b;   /* Earthy Moss Green */
   --color-border-strong: #222222;  /* Charcoal */

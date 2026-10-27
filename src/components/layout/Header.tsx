@@ -215,28 +215,39 @@ export const Header: React.FC = () => {
           </Link>
         </nav>
 
-        {/* Action Button: Exactly One Sign In / Sign Up Button */}
+        {/* Action Button: High Visibility Sign In / Sign Up Button */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
             id="nav-signup-login-btn"
             onClick={() => openAuthModal('login')}
             style={{
-              backgroundColor: 'var(--color-primary-dark)',
-              color: 'var(--color-surface-raised)',
-              border: 'none',
-              padding: '9px 20px',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '13px',
+              backgroundColor: '#3a643b',
+              color: '#ffffff',
+              border: '2px solid #213d31',
+              padding: '10px 22px',
+              borderRadius: '24px',
+              fontSize: '14px',
               fontWeight: 700,
               cursor: 'pointer',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '8px',
-              boxShadow: '0 2px 6px rgba(33, 61, 49, 0.2)',
+              boxShadow: '0 4px 12px rgba(33, 61, 49, 0.25)',
               transition: 'all 0.2s ease',
+              letterSpacing: '0.02em',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.backgroundColor = '#213d31';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(33, 61, 49, 0.35)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.backgroundColor = '#3a643b';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(33, 61, 49, 0.25)';
             }}
           >
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
